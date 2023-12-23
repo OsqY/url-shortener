@@ -1,4 +1,5 @@
 class Link < ApplicationRecord
+  belongs_to :user, optional: true
   has_many :views, dependent: :destroy
   scope :recent_first, -> {order(created_at: :desc)}
   validates :url, presence: true
@@ -13,5 +14,9 @@ class Link < ApplicationRecord
 
   def to_param
     Base62.encode(id)
+  end
+
+  def editable_by?(user)
+    user_id? && (user_id == user&.id)
   end
 end
